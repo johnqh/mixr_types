@@ -8,6 +8,7 @@
     "declaration": false,
     "declarationMap": false,
     "sourceMap": true,
+    "inlineSources": true,
     "noEmit": false
   }
 }
