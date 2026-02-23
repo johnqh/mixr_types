@@ -76,6 +76,25 @@ export interface MixrApiResponse<T = unknown> {
   count?: number;
 }
 
+/**
+ * Type guard that narrows a {@link MixrApiResponse} to a successful response
+ * where `success` is `true` and `data` is guaranteed to be present.
+ *
+ * @example
+ * ```ts
+ * const res: MixrApiResponse<Recipe[]> = await fetchRecipes();
+ * if (isSuccessResponse(res)) {
+ *   // res.data is Recipe[] (not undefined)
+ *   console.log(res.data.length);
+ * }
+ * ```
+ */
+export function isSuccessResponse<T>(
+  res: MixrApiResponse<T>,
+): res is MixrApiResponse<T> & { success: true; data: T } {
+  return res.success === true && res.data !== undefined;
+}
+
 // =============================================================================
 // Entity Types (database models)
 // =============================================================================
@@ -84,10 +103,15 @@ export interface MixrApiResponse<T = unknown> {
  * Equipment item (e.g., shaker, jigger, glass)
  */
 export interface Equipment {
+  /** Unique numeric identifier */
   id: number;
+  /** Category grouping: essential, glassware, garnish, or advanced */
   subcategory: EquipmentSubcategory;
+  /** Display name of the equipment */
   name: string;
+  /** Optional icon image filename; null when no icon is assigned */
   icon: Optional<string>;
+  /** ISO 8601 timestamp of when the equipment was created */
   createdAt: string;
 }
 
@@ -95,10 +119,15 @@ export interface Equipment {
  * Ingredient (e.g., vodka, lime juice, sugar)
  */
 export interface Ingredient {
+  /** Unique numeric identifier */
   id: number;
+  /** Category grouping: spirit, wine, other_alcohol, fruit, spice, or other */
   subcategory: IngredientSubcategory;
+  /** Display name of the ingredient */
   name: string;
+  /** Optional icon image filename; null when no icon is assigned */
   icon: Optional<string>;
+  /** ISO 8601 timestamp of when the ingredient was created */
   createdAt: string;
 }
 
@@ -106,12 +135,19 @@ export interface Ingredient {
  * Mood for cocktail selection (e.g., celebratory, relaxed)
  */
 export interface Mood {
+  /** Unique numeric identifier */
   id: number;
+  /** Single emoji character representing the mood (e.g., "🎉", "😌") */
   emoji: string;
+  /** Display name of the mood */
   name: string;
+  /** Human-readable description of the mood */
   description: string;
+  /** Comma-separated list of example cocktails for this mood */
   exampleDrinks: string;
+  /** Optional image filename for the mood; null when no image is assigned */
   imageName: Optional<string>;
+  /** ISO 8601 timestamp of when the mood was created */
   createdAt: string;
 }
 
@@ -119,10 +155,15 @@ export interface Mood {
  * User profile (snake_case for API compatibility)
  */
 export interface User {
+  /** Firebase UID - unique identifier from Firebase Authentication */
   id: string;
+  /** User's email address */
   email: string;
+  /** User's chosen display name */
   display_name: string;
+  /** ISO 8601 timestamp of when the user account was created */
   created_at: string;
+  /** ISO 8601 timestamp of the last profile update */
   updated_at: string;
 }
 
@@ -130,8 +171,11 @@ export interface User {
  * User preferences for equipment and ingredients (snake_case for API compatibility)
  */
 export interface UserPreferences {
+  /** Array of equipment IDs the user has selected */
   equipment_ids: number[];
+  /** Array of ingredient IDs the user has available */
   ingredient_ids: number[];
+  /** ISO 8601 timestamp of the last preferences update */
   updated_at: string;
 }
 
@@ -139,9 +183,13 @@ export interface UserPreferences {
  * Recipe ingredient with amount
  */
 export interface RecipeIngredient {
+  /** Ingredient ID referencing the Ingredient entity */
   id: number;
+  /** Display name of the ingredient */
   name: string;
+  /** Optional icon image filename; null when no icon is assigned */
   icon: Optional<string>;
+  /** Human-readable amount string (e.g., "2 oz", "1/2 cup", "1 dash") */
   amount: string;
 }
 
@@ -149,8 +197,11 @@ export interface RecipeIngredient {
  * Recipe equipment item
  */
 export interface RecipeEquipment {
+  /** Equipment ID referencing the Equipment entity */
   id: number;
+  /** Display name of the equipment */
   name: string;
+  /** Optional icon image filename; null when no icon is assigned */
   icon: Optional<string>;
 }
 
@@ -158,21 +209,31 @@ export interface RecipeEquipment {
  * Complete recipe with all relations
  */
 export interface Recipe {
+  /** Unique numeric identifier */
   id: number;
+  /** Display name of the recipe (e.g., "Classic Martini") */
   name: string;
+  /** Optional description of the recipe; null when not provided */
   description: Optional<string>;
+  /** Optional mood ID this recipe is associated with; null when unassigned */
   moodId: Optional<number>;
+  /** ISO 8601 timestamp of when the recipe was created */
   createdAt: string;
+  /** Expanded mood relation; null when not loaded or unassigned */
   mood: Optional<Mood>;
+  /** Ordered list of ingredients with amounts */
   ingredients: RecipeIngredient[];
+  /** Ordered list of preparation steps as plain text */
   steps: string[];
+  /** List of equipment needed to make the recipe */
   equipment: RecipeEquipment[];
 }
 
 /**
- * Recipe with userId field
+ * Recipe with userId field indicating the user who generated it
  */
 export interface RecipeWithUser extends Recipe {
+  /** Firebase UID of the user who generated this recipe; null for system recipes */
   userId: Optional<string>;
 }
 
@@ -180,24 +241,37 @@ export interface RecipeWithUser extends Recipe {
  * Recipe rating/review by a user (snake_case for API compatibility)
  */
 export interface RecipeRating {
+  /** Unique numeric identifier */
   id: number;
+  /** ID of the recipe being rated */
   recipe_id: number;
+  /** Firebase UID of the user who submitted the rating */
   user_id: string;
+  /** Display name of the rating author */
   user_name: string;
+  /** Email of the rating author */
   user_email: string;
+  /** Rating value from 1 (worst) to 5 (best) */
   stars: number;
+  /** Optional text review; null when the user only submitted a star rating */
   review: Optional<string>;
+  /** ISO 8601 timestamp of when the rating was created */
   created_at: string;
+  /** ISO 8601 timestamp of the last rating update */
   updated_at: string;
 }
 
 /**
- * Rating aggregate statistics
+ * Rating aggregate statistics for a recipe
  */
 export interface RatingAggregate {
+  /** ID of the recipe these statistics belong to */
   recipe_id: number;
+  /** Mean star rating across all ratings (1.0 - 5.0) */
   average_rating: number;
+  /** Total number of ratings submitted */
   total_ratings: number;
+  /** Breakdown of how many ratings were given at each star level */
   rating_distribution: {
     '1': number;
     '2': number;
@@ -215,6 +289,7 @@ export interface RatingAggregate {
  * Request to update user profile
  */
 export interface UpdateUserRequest {
+  /** New display name for the user; must be non-empty */
   display_name: string;
 }
 
@@ -222,7 +297,9 @@ export interface UpdateUserRequest {
  * Request to update user preferences
  */
 export interface UpdateUserPreferencesRequest {
+  /** Array of equipment IDs the user has selected */
   equipment_ids: number[];
+  /** Array of ingredient IDs the user has available */
   ingredient_ids: number[];
 }
 
@@ -230,6 +307,7 @@ export interface UpdateUserPreferencesRequest {
  * Request to add a recipe to favorites
  */
 export interface AddFavoriteRequest {
+  /** ID of the recipe to add to favorites */
   recipe_id: number;
 }
 
@@ -237,16 +315,21 @@ export interface AddFavoriteRequest {
  * Request to submit a recipe rating
  */
 export interface SubmitRatingRequest {
+  /** Rating value from 1 (worst) to 5 (best) */
   stars: number;
+  /** Optional text review to accompany the star rating */
   review?: string;
 }
 
 /**
- * Request to generate a recipe
+ * Request to generate a recipe based on available equipment, ingredients, and mood
  */
 export interface GenerateRecipeRequest {
+  /** Array of available equipment IDs; must be non-empty */
   equipment_ids: number[];
+  /** Array of available ingredient IDs; must be non-empty */
   ingredient_ids: number[];
+  /** ID of the selected mood for recipe generation */
   mood_id: number;
 }
 
