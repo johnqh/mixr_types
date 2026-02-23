@@ -1,6 +1,6 @@
 {
   "name": "@sudobility/mixr_types",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "TypeScript types for MIXR API - Cocktail recipe platform",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -43,11 +43,11 @@
   "author": "John Huang",
   "license": "BUSL-1.1",
   "peerDependencies": {
-    "@sudobility/types": "^1.9.53"
+    "@sudobility/types": "^1.9.54"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
-    "@sudobility/types": "^1.9.53",
+    "@sudobility/types": "^1.9.54",
     "@typescript-eslint/eslint-plugin": "^8.50.0",
     "@typescript-eslint/parser": "^8.50.0",
     "eslint": "^9.39.2",
