@@ -37,3 +37,6 @@ Thumbs.db
 
 # We commit bun.lock for CI (workflow auto-detects bun vs npm)
 package-lock.json
+
+# Claude Code local settings
+.claude/settings.local.json
