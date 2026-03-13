@@ -1,22 +1,18 @@
 {
   "name": "@sudobility/mixr_types",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "TypeScript types for MIXR API - Cocktail recipe platform",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
+  "type": "module",
+  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": "./dist/index.js"
     }
   },
   "scripts": {
-    "build": "bun run build:esm && bun run build:cjs",
-    "build:esm": "bunx tsc -p tsconfig.esm.json",
-    "build:cjs": "bunx tsc -p tsconfig.cjs.json && bun run build:cjs-rename && rm -rf dist-cjs",
-    "build:cjs-rename": "find dist-cjs -name '*.js' -exec sh -c 'cp \"$1\" \"dist/$(basename \"${1%.js}.cjs\")\"' _ {} \\;",
+    "build": "tsc -p tsconfig.esm.json",
     "clean": "rm -rf dist dist-cjs",
     "dev": "bunx tsc --watch",
     "typecheck": "bunx tsc --noEmit",
@@ -43,11 +39,11 @@
   "author": "John Huang",
   "license": "BUSL-1.1",
   "peerDependencies": {
-    "@sudobility/types": "^1.9.55"
+    "@sudobility/types": "^1.9.57"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
-    "@sudobility/types": "^1.9.55",
+    "@sudobility/types": "^1.9.57",
     "@typescript-eslint/eslint-plugin": "^8.50.0",
     "@typescript-eslint/parser": "^8.50.0",
     "eslint": "^9.39.2",
