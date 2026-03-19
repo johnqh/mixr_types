@@ -90,7 +90,7 @@ export interface MixrApiResponse<T = unknown> {
  * ```
  */
 export function isSuccessResponse<T>(
-  res: MixrApiResponse<T>,
+  res: MixrApiResponse<T>
 ): res is MixrApiResponse<T> & { success: true; data: T } {
   return res.success === true && res.data !== undefined;
 }
