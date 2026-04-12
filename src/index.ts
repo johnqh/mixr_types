@@ -325,10 +325,10 @@ export interface SubmitRatingRequest {
  * Request to generate a recipe based on available equipment, ingredients, and mood
  */
 export interface GenerateRecipeRequest {
-  /** Array of available equipment IDs; must be non-empty */
-  equipment_ids: number[];
-  /** Array of available ingredient IDs; must be non-empty */
-  ingredient_ids: number[];
+  /** Array of available equipment IDs; falls back to user preferences when omitted */
+  equipment_ids?: number[];
+  /** Array of available ingredient IDs; falls back to user preferences when omitted */
+  ingredient_ids?: number[];
   /** ID of the selected mood for recipe generation */
   mood_id: number;
 }
@@ -410,6 +410,43 @@ export type RecipeRatingResponse = MixrApiResponse<RecipeRating>;
 export type RecipeRatingListResponse = MixrApiResponse<RecipeRating[]>;
 export type RatingAggregateResponse = MixrApiResponse<RatingAggregate>;
 export type DeleteRatingResponse = MixrApiResponse<{ message: string }>;
+
+// =============================================================================
+// Subscription types
+// =============================================================================
+
+/**
+ * Subscription status data returned from the subscriptions endpoint
+ */
+export interface SubscriptionStatusData {
+  /** Whether the user has an active subscription */
+  hasSubscription: boolean;
+  /** Array of active entitlement names */
+  entitlements: string[];
+  /** When the subscription started (ISO date or Date), or null if no subscription */
+  subscriptionStartedAt: string | Date | null;
+  /** Platform where the subscription was purchased, or null if no subscription */
+  platform: string | null;
+}
+
+/**
+ * Response from GET /api/v1/users/:userId/subscriptions
+ */
+export interface SubscriptionStatusResponse {
+  success: boolean;
+  data?: SubscriptionStatusData;
+  error?: string;
+  timestamp: string;
+}
+
+// =============================================================================
+// Not found / error response type
+// =============================================================================
+
+/**
+ * Standard error response for 4xx/5xx errors
+ */
+export type MixrErrorResponse = MixrApiResponse<never>;
 
 // =============================================================================
 // Health check types
