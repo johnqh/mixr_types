@@ -1,5 +1,10 @@
 # MIXR Types
 
+> **Git policy — never auto-commit or auto-push.** Leave your work in the working tree.
+> Run `git commit`, `git push`, `gh pr create`, or `scripts/push_all.sh` **only when the user
+> explicitly asks in that turn**. Approval for an earlier change does not carry forward, and
+> finishing a task is not permission to commit it.
+
 TypeScript type definitions for MIXR API - Cocktail recipe platform.
 
 **npm**: `@sudobility/mixr_types` (public)
@@ -121,3 +126,7 @@ mixr_api (backend)
 bun run verify          # All checks
 npm publish             # Publish to npm (public)
 ```
+
+## Git Workflow
+
+- Do not use feature branches for code changes. Always stay on the current branch.
